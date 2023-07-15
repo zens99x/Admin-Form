@@ -23,7 +23,12 @@
                         <td>{{ product.description }}</td>
                         <td>
                             <button class="btn btn-primary">Edit</button> &nbsp;
-                            <button class="btn btn-danger">Delete</button>
+                            <button
+                                class="btn btn-danger"
+                                @click="onDelete(product.id)"
+                            >
+                                Delete
+                            </button>
                         </td>
                     </tr>
                 </tbody>
@@ -49,6 +54,30 @@ export default {
                 .get("http://localhost:8000/api/products")
                 .then((res) => {
                     this.products = res.data;
+                });
+        },
+        onDelete(productId) {
+            this.$swal
+                .fire({
+                    title: "Do you want to delete",
+                    showDenyButton: false,
+                    showCancelButton: true,
+                    confirmButtonText: "OK",
+                })
+                .then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        this.$request
+                            .delete(
+                                `http://localhost:8000/api/products/${productId}`
+                            )
+                            .then((res) => {
+                                if (res.data.success) {
+                                    this.$swal.fire("Deleted!", "", "success");
+                                    this.getAll();
+                                }
+                            });
+                    }
                 });
         },
     },
