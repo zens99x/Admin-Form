@@ -5,34 +5,26 @@
     </div>
 
     <div class="container">
-        <div class="card-deck mb-3 text-center">
+        <div class="card-deck mb-3">
             <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Product name</th>
                         <th scope="col">Price</th>
-                        <th scope="col">Handle</th>
+                        <th scope="col">Description</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>Larry</td>
-                        <td>the Bird</td>
-                        <td>@twitter</td>
+                    <tr :key="index" v-for="(product, index) in products">
+                        <th scope="row" align="left">{{ index + 1 }}</th>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.price }}</td>
+                        <td>{{ product.description }}</td>
+                        <td>
+                            <button class="btn btn-primary">Edit</button> &nbsp;
+                            <button class="btn btn-danger">Delete</button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -41,7 +33,26 @@
 </template>
 
 <script>
-export default {};
+export default {
+    name: "ProductForm",
+    data() {
+        return {
+            products: [],
+        };
+    },
+    created() {
+        this.getAll();
+    },
+    methods: {
+        getAll() {
+            this.$request
+                .get("http://localhost:8000/api/products")
+                .then((res) => {
+                    this.products = res.data;
+                });
+        },
+    },
+};
 </script>
 
 <style></style>
