@@ -18,6 +18,11 @@ const routes = [
         component: () => import("../views/products/Form.vue"),
     },
     {
+        path: "/product/edit/:id",
+        name: "product.edit",
+        component: () => import("../views/products/Form.vue"),
+    },
+    {
         path: "/user",
         name: "user.list",
         component: () => import("../views/users/List.vue"),

@@ -70,7 +70,11 @@
                             Save
                         </button>
                         &nbsp;
-                        <button type="reset" class="btn btn-danger">
+                        <button
+                            type="reset"
+                            class="btn btn-danger"
+                            @click="cancel()"
+                        >
                             Cancel
                         </button>
                     </div>
@@ -96,6 +100,12 @@ export default {
                 description: "",
             },
         };
+    },
+    created() {
+        let productId = this.$route.params.id;
+        if (productId) {
+            this.getProduct(productId);
+        }
     },
     methods: {
         validate() {
@@ -127,18 +137,47 @@ export default {
             return /^\d*$/.test(value);
         },
         save() {
-            console.log(this.validate());
+            if (this.validate()) {
+                if (this.product.id) {
+                    this.$request
+                        .put(
+                            `http://localhost:8000/api/products/${this.product.id}`,
+                            this.product
+                        )
+                        .then((res) => {
+                            if (res.data.success) {
+                                this.$router.push({ name: "product.list" });
+                                return;
+                            }
 
+                            alert("Something was wrong. Please try again");
+                        });
+                    return;
+                }
+
+                this.$request
+                    .post("http://localhost:8000/api/products", this.product)
+                    .then((res) => {
+                        if (res.data.success) {
+                            this.$router.push({ name: "product.list" });
+                            return;
+                        }
+
+                        alert("Something was wrong. Please try again");
+                    });
+            }
+        },
+        getProduct(productId) {
             this.$request
-                .post("http://localhost:8000/api/products", this.product)
+                .get(`http://localhost:8000/api/products/${productId}`)
                 .then((res) => {
-                    if (res.data.success) {
-                        this.$router.push({ name: "product.list" });
-                        return;
-                    }
-
-                    alert("Something was wrong. Please try again");
+                    this.product = res.data;
                 });
+        },
+        cancel() {
+            this.product.name = "";
+            this.product.price = "";
+            this.product.description = "";
         },
     },
 };

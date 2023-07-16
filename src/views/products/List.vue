@@ -13,6 +13,7 @@
                         <th scope="col">Product name</th>
                         <th scope="col">Price</th>
                         <th scope="col">Description</th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -22,7 +23,15 @@
                         <td>{{ product.price }}</td>
                         <td>{{ product.description }}</td>
                         <td>
-                            <button class="btn btn-primary">Edit</button> &nbsp;
+                            <router-link
+                                :to="{
+                                    name: 'product.edit',
+                                    params: { id: product.id },
+                                }"
+                            >
+                                <button class="btn btn-primary">Edit</button>
+                            </router-link>
+                            &nbsp;
                             <button
                                 class="btn btn-danger"
                                 @click="onDelete(product.id)"
